@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wall of Rants</title>
+    <link rel="stylesheet" href="file.css">
+</head>
+<body>
+    <textarea id="display"></textarea>
+
+<script>
+        const display = document.getElementById("display");
+        const filePath = './rant1.txt'; 
+
+        async function loadTextFile() {
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    console.log(`Error: ${response.status}`);
+                }
+                display.innerText = await response.text();
+            } catch (error) {
+                console.error("Couldn't load text:" + error);
+                display.innerText = "Error loading file.";
+            }
+        }
+
+        loadTextFile();
+</script>
+</body>
+</html>
