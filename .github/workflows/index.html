@@ -5,27 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wall of Rants</title>
     <link rel="stylesheet" href="file.css">
+    <style>
+        textarea {
+            border: none;
+            width: 1000px;
+            height: 800px;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
-    <textarea id="display"></textarea>
+    <textarea readonly id="display"></textarea>
 <script>
         const display = document.getElementById("display");
-        const filePath = './rant1.txt'; 
-
+        let rantNumber = 1;
+        let filePath = './rant' + rantNumber + '.txt'; 
+        let sanitizedFilePath = filePath.replaceAll("./", "");
+        const displayMode = "hide";
+        let displayPath = displayMode === "show" ? filePath : sanitizedFilePath;
+        
         async function loadTextFile() {
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) {
-                    console.log(`Error: ${response.status}`);
+                    throw new Error("No more rants available!");
                 }
-                display.innerText = await response.text();
+                display.value = displayPath + '\n' + "--------" + '\n' + await response.text() + '\n' + "--------" + '\n' + "Click Anywhere To Continue";
             } catch (error) {
                 console.error("Couldn't load text:" + error);
-                display.innerText = "Error loading file.";
+                display.value = displayPath + '\n' + "--------" + '\n' + "ERROR: No Doc :(" + '\n' + "--------" + '\n' + "Click Anywhere To Continue";
             }
         }
         //the road is gigantic, the chicken is little
         loadTextFile();
+
+        document.addEventListener("click", (event) => {
+            rantNumber += 1;
+            filePath  = './rant' + rantNumber + '.txt'; 
+            sanitizedFilePath = filePath.replaceAll("./", "");
+            displayPath = displayMode === "show" ? filePath : sanitizedFilePath;
+            loadTextFile()
+        })
 </script>
 </body>
 </html>
